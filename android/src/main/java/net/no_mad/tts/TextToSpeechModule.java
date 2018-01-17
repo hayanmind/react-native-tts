@@ -2,6 +2,7 @@ package net.no_mad.tts;
 
 import android.media.AudioManager;
 import android.os.Build;
+import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.UtteranceProgressListener;
 import android.speech.tts.Voice;
@@ -284,10 +285,13 @@ public class TextToSpeechModule extends ReactContextBaseJavaModule {
     @SuppressWarnings("deprecation")
     private int speak(String utterance, String utteranceId) {
         if (Build.VERSION.SDK_INT >= 21) {
-            return tts.speak(utterance, TextToSpeech.QUEUE_ADD, null, utteranceId);
+            Bundle params = new Bundle();
+            params.putInt(TextToSpeech.Engine.KEY_PARAM_STREAM, AudioManager.STREAM_VOICE_CALL);
+            return tts.speak(utterance, TextToSpeech.QUEUE_ADD, params, utteranceId);
         } else {
             HashMap<String, String> params = new HashMap();
             params.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, utteranceId);
+            params.put(TextToSpeech.Engine.KEY_PARAM_STREAM, String.valueOf(AudioManager.STREAM_VOICE_CALL));
             return tts.speak(utterance, TextToSpeech.QUEUE_ADD, params);
         }
     }
